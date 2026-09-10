@@ -1,0 +1,6 @@
+# Cloudflare Pages config for Gym Tracker.
+# Run `npm run build` first (produces app/dist), then `npm run deploy`
+# (or `npx wrangler pages deploy dist`) from this directory.
+name = "gym-tracker-pwa"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-09-10"
