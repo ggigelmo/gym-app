@@ -54,28 +54,34 @@ npm run build                # produces app/dist
 npm run deploy --workspace=app
 ```
 
-`npm run deploy --workspace=app` runs
-`wrangler pages deploy dist --project-name=gym-tracker-pwa` inside `app/`,
-using the settings in `app/wrangler.toml` (project name, `pages_build_output_dir
-= "dist"`). Wrangler creates the Pages project on first deploy if it doesn't
-exist yet.
+`npm run deploy --workspace=app` runs `wrangler pages deploy dist` inside
+`app/`, using `pages_build_output_dir = "dist"` from `app/wrangler.toml` to
+resolve the output folder. Wrangler prompts to select or create the Pages
+project on first deploy if run interactively; pass `--project-name=<name>`
+to pin it explicitly (e.g. in a non-interactive script).
 
 ### Option B — Cloudflare Pages dashboard (Git integration)
 
-Connect the repo in the Cloudflare Pages dashboard and set:
+Connect the repo in the Cloudflare Pages / Workers Builds dashboard and set,
+under Build configuration:
 
 - **Root directory:** `app`
 - **Build command:** `npm run build`
-- **Build output directory:** `app/dist`
+- **Deploy command:** `npx wrangler pages deploy dist`
+
+(This project uses Cloudflare's unified "Workers Builds" pipeline, which runs
+an explicit deploy command rather than a separate "build output directory"
+field — `wrangler deploy` alone does **not** work here, since it expects a
+Worker entry point or an `[assets]` block, not `pages_build_output_dir`; use
+`wrangler pages deploy` instead.)
 
 With Git integration, every push triggers a new deploy automatically — no
 CI/CD pipeline to maintain beyond that.
 
 ### Notes
 
-- `app/wrangler.toml` pins the project name (`gym-tracker-pwa`) and output
-  directory so `wrangler pages deploy` works with no extra flags once
-  authenticated.
+- `app/wrangler.toml` sets `pages_build_output_dir = "dist"` so
+  `wrangler pages deploy dist` resolves output correctly once authenticated.
 - `app/public/_headers` sets sane Cloudflare Pages cache headers for the
   service worker and manifest (always revalidated, so the in-app update
   prompt isn't blocked by a stale HTTP cache) and long-lived immutable
