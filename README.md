@@ -39,10 +39,16 @@ npm run build
 This runs `tsc -b && vite build` inside `app/`, producing a static build in
 `app/dist`.
 
-## Deploying to Cloudflare Pages
+## Deploying to Cloudflare
 
-The app is a static build with no backend, so Cloudflare Pages is a direct
-fit. Two ways to deploy:
+Live at: **https://gym-app-v2.ggigelmo.workers.dev**
+
+The app is a static build with no backend, deployed as a Cloudflare Worker
+serving static assets (Cloudflare's current unified model — this superseded
+classic "Pages projects"; `app/wrangler.toml`'s `[assets]` block with
+`not_found_handling = "single-page-application"` handles both static file
+serving and the client-side routing fallback, so deep links like
+`/routines/<id>` work on a hard refresh). Two ways to deploy:
 
 ### Option A — CLI (Wrangler)
 
@@ -54,35 +60,30 @@ npm run build                # produces app/dist
 npm run deploy --workspace=app
 ```
 
-`npm run deploy --workspace=app` runs `wrangler pages deploy dist` inside
-`app/`, using `pages_build_output_dir = "dist"` from `app/wrangler.toml` to
-resolve the output folder. Wrangler prompts to select or create the Pages
-project on first deploy if run interactively; pass `--project-name=<name>`
-to pin it explicitly (e.g. in a non-interactive script).
+`npm run deploy --workspace=app` runs `wrangler deploy` inside `app/`, which
+reads `app/wrangler.toml` (`name`, `[assets] directory = "./dist"`) and
+uploads the built assets — no separate project-creation step needed, it
+creates/updates the Worker on first deploy.
 
-### Option B — Cloudflare Pages dashboard (Git integration)
+### Option B — Cloudflare dashboard (Git integration / Workers Builds)
 
-Connect the repo in the Cloudflare Pages / Workers Builds dashboard and set,
-under Build configuration:
+Connect the repo in the Cloudflare dashboard and set, under Build
+configuration:
 
 - **Root directory:** `app`
 - **Build command:** `npm run build`
-- **Deploy command:** `npx wrangler pages deploy dist`
-
-(This project uses Cloudflare's unified "Workers Builds" pipeline, which runs
-an explicit deploy command rather than a separate "build output directory"
-field — `wrangler deploy` alone does **not** work here, since it expects a
-Worker entry point or an `[assets]` block, not `pages_build_output_dir`; use
-`wrangler pages deploy` instead.)
+- **Deploy command:** `npx wrangler deploy` (the dashboard's default — no
+  override needed once `wrangler.toml` uses the `[assets]` block above)
 
 With Git integration, every push triggers a new deploy automatically — no
 CI/CD pipeline to maintain beyond that.
 
 ### Notes
 
-- `app/wrangler.toml` sets `pages_build_output_dir = "dist"` so
-  `wrangler pages deploy dist` resolves output correctly once authenticated.
-- `app/public/_headers` sets sane Cloudflare Pages cache headers for the
+- `app/wrangler.toml` uses the modern `[assets]` directive (not the legacy
+  `pages_build_output_dir` key) — that's what makes plain `wrangler deploy`
+  work directly, matching Cloudflare's current default deploy command.
+- `app/public/_headers` sets sane Cloudflare cache headers for the
   service worker and manifest (always revalidated, so the in-app update
   prompt isn't blocked by a stale HTTP cache) and long-lived immutable
   caching for hashed build assets.
