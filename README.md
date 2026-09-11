@@ -1,9 +1,28 @@
 # Gym Tracker
 
 Gym Tracker is an offline-first Progressive Web App for recording gym training
-sessions — exercises, routines, and logged sets (weight, reps, unit) — built
-primarily for one-handed use on a phone, mid-workout. It works fully offline
-and syncs when a connection is available.
+sessions — exercises, routines, logged sets (weight, reps, unit), progress
+stats, and personal goals — built primarily for one-handed use on a phone,
+mid-workout. It works fully offline and syncs when a connection is available.
+
+## Data & privacy
+
+**Everything is stored locally, on your own device — nothing is sent to a
+server.** All app data (exercises, routines, workout sessions, logged sets,
+and the Profile screen's weight/strength goals) lives entirely in your
+browser's local IndexedDB storage via [Dexie](https://dexie.org/). The app
+makes no network calls to send or sync this data anywhere; the `worker/`
+package is an unimplemented placeholder for an optional future sync backend
+(see `worker/README.md`). Uninstalling the app or clearing your browser's
+site data deletes it for good — use the Profile screen's Export/Import backup
+feature to keep a copy.
+
+## Design
+
+The app's visual design (color system, typography, icons, and the layout of
+every screen) was designed with [Sleek](https://sleek.design), an AI-powered
+mobile app design tool, and implemented in code from Sleek's generated
+designs.
 
 ## Monorepo layout
 

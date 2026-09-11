@@ -401,6 +401,21 @@ export default function ProfileScreen() {
           {message.text}
         </p>
       )}
+
+      <p
+        className="mt-6 px-1 text-center text-[10px] font-bold uppercase tracking-widest"
+        style={{ color: 'var(--color-text-faint)' }}
+      >
+        All data stays on this device · Design by{' '}
+        <a
+          href="https://sleek.design"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: 'var(--color-text-muted)' }}
+        >
+          Sleek
+        </a>
+      </p>
     </div>
   );
 }
