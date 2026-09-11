@@ -41,7 +41,7 @@ This runs `tsc -b && vite build` inside `app/`, producing a static build in
 
 ## Deploying to Cloudflare
 
-Live at: **https://gym-app-v2.ggigelmo.workers.dev**
+
 
 The app is a static build with no backend, deployed as a Cloudflare Worker
 serving static assets (Cloudflare's current unified model — this superseded
