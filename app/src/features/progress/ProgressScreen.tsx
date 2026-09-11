@@ -15,9 +15,9 @@ const icons = {
 };
 
 /**
- * Streak, this-week workout count, and a Monday-Sunday sets-per-day bar
- * chart — all derived live from real WorkoutSession/LoggedSet data via
- * useProgressStats(), no invented numbers.
+ * Weekly minutes (with trend vs last week), streak, this-week workout count,
+ * and a Monday-Sunday sets-per-day bar chart — all derived live from real
+ * WorkoutSession/LoggedSet data via useProgressStats(), no invented numbers.
  */
 export default function ProgressScreen() {
   const stats = useProgressStats();
@@ -26,9 +26,17 @@ export default function ProgressScreen() {
     stats !== undefined &&
     stats.currentStreak === 0 &&
     stats.completedThisWeek === 0 &&
+    stats.weeklyMinutes.current === 0 &&
     stats.weeklyVolume.every((d) => d.setCount === 0);
 
   const maxSets = stats ? Math.max(...stats.weeklyVolume.map((d) => d.setCount), 1) : 1;
+  const nonZeroSetCounts = stats ? stats.weeklyVolume.map((d) => d.setCount).filter((n) => n > 0) : [];
+  const avgNonZero =
+    nonZeroSetCounts.length > 0 ? nonZeroSetCounts.reduce((a, b) => a + b, 0) / nonZeroSetCounts.length : 0;
+  const peakPct =
+    nonZeroSetCounts.length >= 2 && avgNonZero > 0
+      ? Math.round(((maxSets - avgNonZero) / avgNonZero) * 100)
+      : undefined;
 
   return (
     <div className="px-4 py-4">
@@ -65,6 +73,40 @@ export default function ProgressScreen() {
 
       {stats && !isEmpty && (
         <div className="flex flex-col gap-3">
+          <div
+            className="relative overflow-hidden rounded-xl p-6 shadow-xl"
+            style={{
+              background: 'var(--color-accent)',
+              color: 'var(--color-accent-contrast)',
+              boxShadow: '0 20px 50px -20px rgba(255, 90, 60, 0.5)',
+            }}
+          >
+            <iconify-icon
+              icon="ph:trend-up-fill"
+              className="pointer-events-none absolute"
+              style={{ top: -24, right: -24, fontSize: '9rem', opacity: 0.12 }}
+              aria-hidden="true"
+            />
+            <div className="relative z-10">
+              <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">Weekly Minutes</p>
+              <p className="mt-1 text-6xl font-black tracking-tight">{stats.weeklyMinutes.current}</p>
+              {stats.weeklyMinutes.trendPct !== undefined && (
+                <div className="mt-3 flex items-center gap-2 text-xs font-bold">
+                  <span
+                    className="flex items-center gap-1 rounded-lg px-2 py-1"
+                    style={{ background: 'rgba(255,255,255,0.2)' }}
+                  >
+                    <iconify-icon
+                      icon={stats.weeklyMinutes.trendPct >= 0 ? 'ph:arrow-up-right-bold' : 'ph:arrow-down-right-bold'}
+                    />
+                    {Math.abs(stats.weeklyMinutes.trendPct)}%
+                  </span>
+                  <span className="opacity-80">vs last week</span>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <Card className="flex flex-col gap-2">
               <div
@@ -82,7 +124,7 @@ export default function ProgressScreen() {
                   className="text-[10px] font-bold uppercase tracking-widest"
                   style={{ color: 'var(--color-text-muted)' }}
                 >
-                  {stats.currentStreak === 1 ? 'day streak' : 'day streak'}
+                  day streak
                 </p>
               </div>
             </Card>
@@ -109,15 +151,26 @@ export default function ProgressScreen() {
           </div>
 
           <Card className="flex flex-col gap-3">
-            <p
-              className="text-[10px] font-bold uppercase tracking-widest"
-              style={{ color: 'var(--color-text-muted)' }}
-            >
-              Weekly volume
-            </p>
+            <div className="flex items-end justify-between">
+              <p
+                className="text-[10px] font-bold uppercase tracking-widest"
+                style={{ color: 'var(--color-text-muted)' }}
+              >
+                Weekly volume <span style={{ color: 'var(--color-text-faint)' }}>Sets</span>
+              </p>
+              {peakPct !== undefined && peakPct > 0 && (
+                <span
+                  className="text-[10px] font-bold uppercase tracking-widest"
+                  style={{ color: 'var(--color-accent)' }}
+                >
+                  +{peakPct}% Peak
+                </span>
+              )}
+            </div>
             <div className="flex items-end justify-between gap-2" style={{ height: 120 }}>
               {stats.weeklyVolume.map((d) => {
                 const pct = (d.setCount / maxSets) * 100;
+                const isPeak = d.setCount > 0 && d.setCount === maxSets;
                 return (
                   <div
                     key={d.dayKey}
@@ -130,7 +183,10 @@ export default function ProgressScreen() {
                         style={{
                           height: `${pct}%`,
                           minHeight: d.setCount > 0 ? 4 : 2,
-                          background: d.setCount > 0 ? 'var(--color-accent)' : 'var(--color-bg-sunken)',
+                          background:
+                            d.setCount > 0
+                              ? `color-mix(in srgb, var(--color-accent) ${isPeak ? 100 : Math.max(35, pct)}%, transparent)`
+                              : 'var(--color-bg-sunken)',
                         }}
                       />
                     </div>

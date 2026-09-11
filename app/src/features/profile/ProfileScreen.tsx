@@ -318,6 +318,12 @@ export default function ProfileScreen() {
         </h1>
       </div>
 
+      <p
+        className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide"
+        style={{ color: 'var(--color-text-faint)' }}
+      >
+        Core Goals
+      </p>
       <div className="flex flex-col gap-3">
         <WeightGoalCard />
         <StrengthGoalCard />

@@ -122,21 +122,60 @@ export async function getCompletedThisWeekCount(now: Date = new Date()): Promise
     .length;
 }
 
+async function getWeekMinutes(monday: Date, nextMonday: Date): Promise<number> {
+  const sessions = await db.workoutSessions
+    .filter(
+      (s) =>
+        s.deletedAt == null &&
+        s.completedAt != null &&
+        s.startedAt >= monday.getTime() &&
+        s.startedAt < nextMonday.getTime(),
+    )
+    .toArray();
+  const totalMs = sessions.reduce((sum, s) => sum + (s.completedAt! - s.startedAt), 0);
+  return Math.round(totalMs / 60000);
+}
+
+export interface WeeklyMinutes {
+  current: number;
+  /** % change vs the prior week — undefined if the prior week had 0 minutes (no baseline to compare against). */
+  trendPct: number | undefined;
+}
+
+/** Total minutes across completed sessions this week, plus the trend vs last week. */
+export async function getWeeklyMinutes(now: Date = new Date()): Promise<WeeklyMinutes> {
+  const monday = startOfWeek(now);
+  const nextMonday = new Date(monday);
+  nextMonday.setDate(nextMonday.getDate() + 7);
+  const prevMonday = new Date(monday);
+  prevMonday.setDate(prevMonday.getDate() - 7);
+
+  const [current, previous] = await Promise.all([
+    getWeekMinutes(monday, nextMonday),
+    getWeekMinutes(prevMonday, monday),
+  ]);
+
+  const trendPct = previous > 0 ? Math.round(((current - previous) / previous) * 100) : undefined;
+  return { current, trendPct };
+}
+
 export interface ProgressStats {
   weeklyVolume: DailyVolume[];
   currentStreak: number;
   completedThisWeek: number;
+  weeklyMinutes: WeeklyMinutes;
 }
 
-/** One live-query subscription covering all three stats. */
+/** One live-query subscription covering all four stats. */
 export function useProgressStats(): ProgressStats | undefined {
   return useLiveQuery(async () => {
     const now = new Date();
-    const [weeklyVolume, currentStreak, completedThisWeek] = await Promise.all([
+    const [weeklyVolume, currentStreak, completedThisWeek, weeklyMinutes] = await Promise.all([
       getWeeklyVolume(now),
       getCurrentStreak(now),
       getCompletedThisWeekCount(now),
+      getWeeklyMinutes(now),
     ]);
-    return { weeklyVolume, currentStreak, completedThisWeek };
+    return { weeklyVolume, currentStreak, completedThisWeek, weeklyMinutes };
   }, []);
 }
