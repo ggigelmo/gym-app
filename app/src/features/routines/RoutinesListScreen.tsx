@@ -114,7 +114,7 @@ export default function RoutinesListScreen() {
             width: 56,
             height: 56,
             right: 16,
-            bottom: `calc(56px + 16px + env(safe-area-inset-bottom))`,
+            bottom: `calc(64px + 16px + env(safe-area-inset-bottom))`,
             background: 'var(--color-accent)',
             color: 'var(--color-accent-contrast)',
           }}

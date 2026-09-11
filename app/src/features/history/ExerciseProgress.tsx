@@ -1,12 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import type { WeightUnit } from '@shared/types';
 import { db } from '../../db/db';
-
-const LB_TO_KG = 0.45359237;
-
-function toKg(weight: number, unit: WeightUnit): number {
-  return unit === 'lb' ? weight * LB_TO_KG : weight;
-}
+import { toKg } from '../../lib/weight';
 
 interface ProgressPoint {
   date: number;

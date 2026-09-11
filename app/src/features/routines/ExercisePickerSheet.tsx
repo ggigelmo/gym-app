@@ -9,14 +9,23 @@ interface ExercisePickerSheetProps {
   excludeIds: string[];
   onSelect: (exercise: Exercise) => void;
   onClose: () => void;
+  /** Header text — defaults to "Add exercise" (the routine-building use case). */
+  title?: string;
 }
 
 /**
- * Full-screen overlay for adding an exercise to a routine. Lists the
- * exercise library (from the existing exercises repo) grouped by muscle
- * group, filtered by a search box and by exercises already selected.
+ * Full-screen overlay for picking an exercise. Lists the exercise library
+ * (from the existing exercises repo) grouped by muscle group, filtered by a
+ * search box and by exercises already selected. Used both for adding an
+ * exercise to a routine and for one-off picks (e.g. the Profile screen's
+ * strength-goal exercise).
  */
-export default function ExercisePickerSheet({ excludeIds, onSelect, onClose }: ExercisePickerSheetProps) {
+export default function ExercisePickerSheet({
+  excludeIds,
+  onSelect,
+  onClose,
+  title = 'Add exercise',
+}: ExercisePickerSheetProps) {
   const exercises = useExercises();
   const [query, setQuery] = useState('');
 
@@ -56,7 +65,7 @@ export default function ExercisePickerSheet({ excludeIds, onSelect, onClose }: E
         style={{ borderColor: 'var(--color-border)', paddingTop: 'env(safe-area-inset-top)' }}
       >
         <h2 className="flex-1 text-lg font-semibold" style={{ color: 'var(--color-text)' }}>
-          Add exercise
+          {title}
         </h2>
         <button
           type="button"

@@ -92,12 +92,14 @@ export default function Stepper({
         </button>
 
         <div
-          className="flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-lg border px-1 py-1"
+          className="flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-lg border px-0.5 py-1"
           style={{ borderColor: 'var(--color-border)', background: 'var(--color-bg-elevated)' }}
         >
           {/* Suffix (e.g. "kg") sits below the number rather than beside it —
               inline, it competes with the digits for a ~45px-wide box and
-              gets squeezed to nothing for any 2+ digit value. */}
+              gets squeezed to nothing for any 2+ digit value. text-lg (not
+              text-xl) so 3-4 character values (e.g. "66.1", "150") fit
+              without clipping in that same ~45px box. */}
           <input
             type="text"
             inputMode="decimal"
@@ -109,7 +111,7 @@ export default function Stepper({
               if (e.key === 'Enter') e.currentTarget.blur();
             }}
             aria-label={label}
-            className="w-full min-w-0 bg-transparent text-center text-xl font-semibold tabular-nums outline-none"
+            className="w-full min-w-0 bg-transparent text-center text-lg font-semibold tabular-nums outline-none"
             style={{ color: 'var(--color-text)' }}
           />
           {suffix && (

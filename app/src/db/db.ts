@@ -11,6 +11,7 @@ import type {
   LoggedSet,
   OutboxEntry,
   Routine,
+  UserProfile,
   WorkoutSession,
 } from '@shared/types';
 
@@ -20,6 +21,7 @@ export class AppDB extends Dexie {
   workoutSessions!: Table<WorkoutSession, string>;
   loggedSets!: Table<LoggedSet, string>;
   outbox!: Table<OutboxEntry, string>;
+  userProfiles!: Table<UserProfile, string>;
 
   constructor() {
     super('gym-tracker');
@@ -30,6 +32,14 @@ export class AppDB extends Dexie {
       workoutSessions: 'id, routineId, startedAt, completedAt, updatedAt, deletedAt',
       loggedSets: 'id, sessionId, exerciseId, updatedAt, deletedAt',
       outbox: 'id, entityType, pushedAt, createdAt',
+    });
+
+    // v2: add userProfiles (singleton goals table). Existing stores are
+    // intentionally left out below — Dexie carries forward any table/index
+    // not re-listed in a later version, so omission here means "unchanged,"
+    // not "dropped." Only the new table needs declaring.
+    this.version(2).stores({
+      userProfiles: 'id, updatedAt, deletedAt',
     });
   }
 }

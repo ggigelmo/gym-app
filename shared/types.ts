@@ -71,7 +71,24 @@ export interface LoggedSet extends SyncMeta {
   rpe?: number;
 }
 
-export type OutboxEntityType = 'exercise' | 'routine' | 'workoutSession' | 'loggedSet';
+// Singleton profile/goals row — there is exactly one of these, ever (see
+// PROFILE_ID in db/repo/profile.ts). Extends SyncMeta for consistency with
+// every other entity even though there's only one row.
+export interface UserProfile extends SyncMeta {
+  bodyweightCurrent?: number;
+  bodyweightGoal?: number;
+  bodyweightUnit: WeightUnit;
+  strengthGoalExerciseId?: string; // -> Exercise.id
+  strengthGoalWeight?: number;
+  strengthGoalUnit: WeightUnit;
+}
+
+export type OutboxEntityType =
+  | 'exercise'
+  | 'routine'
+  | 'workoutSession'
+  | 'loggedSet'
+  | 'userProfile';
 export type OutboxOp = 'create' | 'update' | 'delete';
 
 // Inert until a sync layer exists. Every write goes through the repository

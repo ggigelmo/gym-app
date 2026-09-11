@@ -41,7 +41,7 @@ export default function UpdatePrompt() {
       style={{
         left: 12,
         right: 12,
-        bottom: `calc(72px + env(safe-area-inset-bottom))`,
+        bottom: `calc(80px + env(safe-area-inset-bottom))`,
         background: 'var(--color-bg-elevated)',
         borderColor: 'var(--color-border)',
         color: 'var(--color-text)',

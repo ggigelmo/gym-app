@@ -3,7 +3,9 @@ import BottomNav from './components/BottomNav';
 import SettingsButton from './components/SettingsButton';
 import UpdatePrompt from './components/UpdatePrompt';
 
-const BOTTOM_NAV_HEIGHT = 56;
+// Must track BottomNav's real rendered height: 56 (each tab's minHeight) + 8
+// (the extra breathing room BottomNav adds above the safe area).
+const BOTTOM_NAV_HEIGHT = 64;
 
 /**
  * Root layout: scrollable content area rendering the active route, a fixed
@@ -22,7 +24,7 @@ function App() {
           paddingBottom: `calc(${BOTTOM_NAV_HEIGHT}px + env(safe-area-inset-bottom))`,
         }}
       >
-        {location.pathname !== '/backup' && <SettingsButton />}
+        {location.pathname !== '/profile' && <SettingsButton />}
         <Outlet />
       </main>
       <UpdatePrompt />

@@ -12,6 +12,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/routines', label: 'Routines', icon: 'ph:barbell-bold' },
   { to: '/exercises', label: 'Exercises', icon: 'ph:list-bullets-bold' },
   { to: '/history', label: 'History', icon: 'ph:clock-counter-clockwise-bold' },
+  { to: '/progress', label: 'Progress', icon: 'ph:trend-up-bold' },
 ];
 
 /**
@@ -25,7 +26,10 @@ export default function BottomNav() {
       style={{
         background: 'color-mix(in srgb, var(--color-bg) 90%, transparent)',
         borderColor: 'var(--color-border)',
-        paddingBottom: 'env(safe-area-inset-bottom)',
+        // A little breathing room above the safe area even on devices with
+        // none (e.g. no home-indicator gesture bar) — otherwise the icons
+        // sit flush against the physical bottom edge of the screen.
+        paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)',
       }}
     >
       <ul className="flex">

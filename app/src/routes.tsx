@@ -8,7 +8,8 @@ import RoutineDetailScreen from './features/routines/RoutineDetailScreen';
 import TrainScreen from './features/train/TrainScreen';
 import HistoryListScreen from './features/history/HistoryListScreen';
 import SessionDetailScreen from './features/history/SessionDetailScreen';
-import BackupScreen from './features/backup/BackupScreen';
+import ProgressScreen from './features/progress/ProgressScreen';
+import ProfileScreen from './features/profile/ProfileScreen';
 
 export const router = createBrowserRouter([
   {
@@ -26,7 +27,9 @@ export const router = createBrowserRouter([
       { path: 'exercises/:id/edit', element: <ExerciseFormScreen /> },
       { path: 'history', element: <HistoryListScreen /> },
       { path: 'history/:id', element: <SessionDetailScreen /> },
-      { path: 'backup', element: <BackupScreen /> },
+      { path: 'progress', element: <ProgressScreen /> },
+      { path: 'profile', element: <ProfileScreen /> },
+      { path: 'backup', element: <Navigate to="/profile" replace /> },
       { path: '*', element: <Navigate to="/train" replace /> },
     ],
   },
