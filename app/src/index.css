@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+/*
+ * Gym Tracker design tokens — "Sleek" fitness theme: warm off-white
+ * background, bold orange accent, big soft-shadow cards. Light values live
+ * on :root; dark values override under the media query, keeping the same
+ * orange accent (brightened) since it's the brand color, not a light-mode
+ * artifact.
+ */
+:root {
+  --color-bg: #f6f6f4;
+  --color-bg-elevated: #ffffff;
+  --color-bg-sunken: #f0f1f3;
+  --color-border: #e8e9ea;
+  --color-text: #16181d;
+  --color-text-muted: #8a9099;
+  --color-text-faint: #b0b4bb;
+
+  --color-accent: #ff5a3c;
+  --color-accent-contrast: #ffffff;
+  --color-accent-muted: #ffe4dc;
+
+  --color-danger: #ff3b30;
+  --color-danger-muted: #ffe0de;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #16181d;
+    --color-bg-elevated: #1f2128;
+    --color-bg-sunken: #24262e;
+    --color-border: #2d2f38;
+    --color-text: #f6f6f4;
+    --color-text-muted: #9298a3;
+    --color-text-faint: #676c76;
+
+    --color-accent: #ff6b4a;
+    --color-accent-contrast: #16181d;
+    --color-accent-muted: #3a2019;
+
+    --color-danger: #ff453a;
+    --color-danger-muted: #3a1512;
+  }
+}
+
+/* Chunkier corners throughout: rounded-md/lg/xl now read as the app's
+   signature big-radius cards and pills instead of Tailwind's defaults. */
+@theme {
+  --radius-md: 0.875rem;
+  --radius-lg: 1.125rem;
+  --radius-xl: 1.375rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overscroll-behavior-y: none;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family:
+    'Plus Jakarta Sans',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent layout shift for icons without explicit dimensions */
+iconify-icon:not([width]):not([height]) {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}

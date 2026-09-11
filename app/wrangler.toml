@@ -1,0 +1,11 @@
+# Cloudflare Workers (unified Pages+Workers) config for Gym Tracker.
+# Run `npm run build` first (produces dist/), then `npm run deploy`
+# (or `npx wrangler deploy`) from this directory.
+name = "gym-app-v2"
+compatibility_date = "2026-09-10"
+
+[assets]
+directory = "./dist"
+# Client-side routing (react-router): unknown paths (e.g. /routines/abc123)
+# must fall back to index.html rather than 404.
+not_found_handling = "single-page-application"
