@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
   <!-- Full-bleed background: OS masks crop up to ~20% from each edge, so
        glyph content below is scaled into the center safe zone. -->
-  <rect width="48" height="48" fill="#0b0f17"/>
-  <g fill="#22c55e" transform="translate(24 24) scale(0.65) translate(-24 -24)">
+  <rect width="48" height="48" fill="#ff5a3c"/>
+  <g fill="#ffffff" transform="translate(24 24) scale(0.65) translate(-24 -24)">
     <rect x="15" y="22" width="18" height="4" rx="2"/>
     <rect x="4" y="10" width="5" height="28" rx="2"/>
     <rect x="10" y="15" width="4" height="18" rx="2"/>
